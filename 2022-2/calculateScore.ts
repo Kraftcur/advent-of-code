@@ -1,14 +1,8 @@
 import readline from 'readline';
 import fs from 'fs';
 
-type Rock = 1;
-type Paper = 2;
-type Scissors = 3;
-
 type TheirMove = 'A' | 'B' | 'C';
 type MyMove = 'X' | 'Y' | 'Z';
-
-type Move = Rock | Paper | Scissors;
 
 enum MovePoints {
   A = 1,
@@ -85,17 +79,6 @@ class MyGame {
     }
   }
 }
-
-// 1 beats 3
-// 2 beats 1
-// 3 beats 2
-
-// const getScoreForRound: Game = (theirMove: TheirMove, myMove: MyMove) => {
-//   let theirPoints = MovePoints[theirMove];
-//   let myPoints = MovePoints[myMove];
-
-//   if (theirPoints === myPoints) return;
-// };
 
 const run = () => {
   var lineReader = readline.createInterface({
