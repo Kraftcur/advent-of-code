@@ -1,14 +1,7 @@
-import readline from 'readline';
-import fs from 'fs';
-
-const getReader = () => {
-  return readline.createInterface({
-    input: fs.createReadStream('./input.txt'),
-  });
-};
+import { getReaderInterface } from '../file';
 
 const run = () => {
-  var lineReader = getReader();
+  var lineReader = getReaderInterface('./2022-3/input.txt');
 
   puzzle1(lineReader);
   puzzle2(lineReader);

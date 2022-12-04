@@ -1,16 +1,9 @@
-import readline from 'readline';
-import fs from 'fs';
+import { getReaderInterface } from '../file';
 
 type State = 'FULLY_OVERLAPS' | 'NO_OVERLAP' | 'PARTIAL_OVERLAPS';
 
-const getReader = () => {
-  return readline.createInterface({
-    input: fs.createReadStream('./input.txt'),
-  });
-};
-
 const run = () => {
-  var lineReader = getReader();
+  var lineReader = getReaderInterface('./2022-4/input.txt');
 
   puzzle1(lineReader);
 };
