@@ -16,21 +16,25 @@ function createYGrid(yGrid: number[][], xRow: number[]): number[][] {
   return yGrid;
 }
 
-function isVisible(index: number, row: number[]): boolean[] {
-  let lr: boolean[] = [true, true];
+function getSenicScore(index: number, row: number[]): number[] {
+  let lr: number[] = [0, 0];
 
   // Check numbers to the left of the given index
+  let numLeftTrees = 0;
   for (let i = index - 1; i >= 0; i--) {
-    if (row[i] >= row[index]) {
-      lr[0] = false;
+    numLeftTrees++;
+    if (row[i] >= row[index] || i === 0) {
+      lr[0] = numLeftTrees;
       break;
     }
   }
 
   // Check numbers to the right of the given index
+  let numRightTrees = 0;
   for (let i = index + 1; i < row.length; i++) {
-    if (row[i] >= row[index]) {
-      lr[1] = false;
+    numRightTrees++;
+    if (row[i] >= row[index] || i === row.length - 1) {
+      lr[1] = numRightTrees;
       break;
     }
   }
@@ -38,27 +42,27 @@ function isVisible(index: number, row: number[]): boolean[] {
   return lr;
 }
 
-function createVisibleCordsMap(
-  visibleCordsMap: Map<string, boolean[]>,
+function createsenicScoreDirectionMap(
+  senicScoreDirectionMap: Map<string, number[]>,
   grid: number[][],
   isYGrid: boolean
 ): void {
   for (let yCord = 0; yCord < grid.length; yCord++) {
     for (let xCord = 0; xCord < grid[yCord].length; xCord++) {
-      let isTreeVisible = isVisible(xCord, grid[yCord]);
+      let senicScore = getSenicScore(xCord, grid[yCord]);
       let xyKey: string;
       if (isYGrid) {
         xyKey = [yCord, xCord].join(',');
       } else {
         xyKey = [xCord, yCord].join(',');
       }
-      if (visibleCordsMap.has(xyKey)) {
-        visibleCordsMap.set(xyKey, [
-          ...visibleCordsMap.get(xyKey)!,
-          ...isTreeVisible,
+      if (senicScoreDirectionMap.has(xyKey)) {
+        senicScoreDirectionMap.set(xyKey, [
+          ...senicScoreDirectionMap.get(xyKey)!,
+          ...senicScore,
         ]);
       } else {
-        visibleCordsMap.set(xyKey, isTreeVisible);
+        senicScoreDirectionMap.set(xyKey, senicScore);
       }
     }
   }
@@ -67,7 +71,7 @@ function createVisibleCordsMap(
 function puzzle(lineReader: any): void {
   let xGrid: number[][] = [];
   let yGrid: number[][] = [];
-  let visibleCordsMap: Map<string, boolean[]> = new Map();
+  let senicScoreDirectionMap: Map<string, number[]> = new Map();
 
   lineReader.on('line', (line: string) => {
     let xRow = line.split('').map(Number);
@@ -76,12 +80,17 @@ function puzzle(lineReader: any): void {
   });
 
   lineReader.on('close', () => {
-    createVisibleCordsMap(visibleCordsMap, xGrid, false);
-    createVisibleCordsMap(visibleCordsMap, yGrid, true);
-    const numberOfVisibleTrees = Array.from(visibleCordsMap.entries())
-      .filter(([_, values]) => values.some((value) => value === true))
-      .map(([key, _]) => key);
-    console.log(numberOfVisibleTrees.length, numberOfVisibleTrees);
+    createsenicScoreDirectionMap(senicScoreDirectionMap, xGrid, false);
+    createsenicScoreDirectionMap(senicScoreDirectionMap, yGrid, true);
+    const productMap = new Map<string, number>();
+    senicScoreDirectionMap.forEach((values, key) =>
+      productMap.set(
+        key,
+        values.reduce((product, value) => product * value)
+      )
+    );
+    const largestValue = Math.max(...productMap.values());
+    console.log(largestValue);
   });
 }
 
