@@ -1,0 +1,11 @@
+{
+  "type": "node",
+  "request": "launch",
+  "name": "Launch Program",
+  "skipFiles": ["<node_internals>/**"],
+  "program": "${file}",
+  "env": {
+    "NODE_OPTIONS": "--inspect-brk",
+    "NODE_INSPECT_MAX_STRING_LENGTH": "10000"
+  }
+}
